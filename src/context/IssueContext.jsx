@@ -19,6 +19,7 @@ export const IssueContext = createContext({
   updateSorting: () => {},
   clearIssues: () => {},
   clearError: () => {},
+  markIssueAsReviewed: () => {},
 });
 
 /**

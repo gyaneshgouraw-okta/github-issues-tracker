@@ -32,6 +32,7 @@
  * @property {string} closed_at - Closing date
  * @property {number} comments - Number of comments
  * @property {Array<Comment>} [postClosureComments] - Comments added after issue was closed
+ * @property {boolean} [reviewed] - Whether the issue has been marked as reviewed
  */
 
 /**

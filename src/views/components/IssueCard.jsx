@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import styled from 'styled-components';
 import Card from './Card';
 import { formatDate, getTimeDifference } from '../../utils/dateUtils';
+import { IssueContext } from '../../context/IssueContext';
 
 const IssueHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
+  justify-content: space-between;
 `;
 
 const IssueTitle = styled.h3`
@@ -22,17 +24,7 @@ const IssueNumber = styled.span`
   font-weight: normal;
 `;
 
-const IssueTag = styled.span`
-  padding: 0.125rem 0.5rem;
-  border-radius: 2em;
-  font-size: 0.75rem;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  background-color: #d73a49;
-  color: white;
-  margin-right: 0.5rem;
-`;
+// This styled component was unused and has been removed
 
 const IssueMetadata = styled.div`
   display: flex;
@@ -127,6 +119,35 @@ const IssueUrl = styled.a`
   }
 `;
 
+const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const ReviewButton = styled.button`
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: ${props => props.reviewed ? '#2da44e' : '#0366d6'};
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  
+  &:hover {
+    background-color: ${props => props.reviewed ? '#2c974b' : '#0958d5'};
+  }
+  
+  &:disabled {
+    background-color: #6e7781;
+    cursor: default;
+  }
+`;
+
 /**
  * Component to display a GitHub issue with post-closure comments
  * @param {Object} props - Component props
@@ -134,19 +155,40 @@ const IssueUrl = styled.a`
  */
 function IssueCard({ issue }) {
   const [showComments, setShowComments] = useState(false);
+  const { markIssueAsReviewed } = useContext(IssueContext);
   
   // Calculate time elapsed after closure
   const timeAfterClosure = getTimeDifference(issue.closed_at, issue.postClosureComments[0]?.created_at);
   
+  const handleMarkAsReviewed = () => {
+    markIssueAsReviewed(issue.id);
+  };
+  
   return (
     <Card>
       <IssueHeader>
-        <IssueTitle>
-          <IssueUrl href={issue.html_url} target="_blank" rel="noopener noreferrer">
-            {issue.title}
-          </IssueUrl>{' '}
-          <IssueNumber>#{issue.number}</IssueNumber>
-        </IssueTitle>
+        <TitleContainer>
+          <IssueTitle>
+            <IssueUrl href={issue.html_url} target="_blank" rel="noopener noreferrer">
+              {issue.title}
+            </IssueUrl>{' '}
+            <IssueNumber>#{issue.number}</IssueNumber>
+          </IssueTitle>
+        </TitleContainer>
+        <ReviewButton 
+          reviewed={issue.reviewed} 
+          onClick={handleMarkAsReviewed} 
+          disabled={issue.reviewed}
+        >
+          {issue.reviewed ? (
+            <>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                <path fillRule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path>
+              </svg>
+              Reviewed
+            </>
+          ) : 'Mark as Reviewed'}
+        </ReviewButton>
       </IssueHeader>
       
       <IssueMetadata>
