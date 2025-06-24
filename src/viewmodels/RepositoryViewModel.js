@@ -56,6 +56,38 @@ export function useRepositoryViewModel() {
   }, []);
 
   /**
+   * Search for a repository by owner/name string
+   * @param {string} repoString - Repository string in format "owner/name"
+   * @returns {Promise<Object>} - Repository information
+   */
+  const searchRepository = useCallback(async (repoString) => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Parse owner and repo name from the input string
+      const [owner, repo] = repoString.split('/');
+      
+      if (!owner || !repo) {
+        throw new Error('Invalid repository format. Use "owner/repo"');
+      }
+      
+      // Use the existing getRepository method to fetch the repo
+      const repository = await githubService.getRepository(owner, repo);
+      
+      // Don't add it to the repositories list since it's just a search result
+      setSelectedRepo(repository);
+      
+      return repository;
+    } catch (error) {
+      setError(error.message || `Failed to find repository: ${repoString}`);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  /**
    * Clear the selected repository
    */
   const clearSelectedRepository = useCallback(() => {
@@ -76,6 +108,7 @@ export function useRepositoryViewModel() {
     error,
     loadUserRepositories,
     selectRepository,
+    searchRepository,
     clearSelectedRepository,
     clearError,
   };

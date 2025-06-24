@@ -12,6 +12,7 @@ export const RepositoryContext = createContext({
   error: null,
   loadUserRepositories: () => {},
   selectRepository: () => {},
+  searchRepository: () => {},
   clearSelectedRepository: () => {},
   clearError: () => {},
 });

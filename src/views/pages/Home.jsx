@@ -5,6 +5,7 @@ import Card from '../components/Card';
 import Button from '../components/Button';
 import Loading from '../components/Loading';
 import Alert from '../components/Alert';
+import RepoSearch from '../components/RepoSearch';
 import { RepositoryContext } from '../../context/RepositoryContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -26,6 +27,18 @@ const Title = styled.h1`
 const Subtitle = styled.p`
   color: #586069;
   margin-bottom: 1.5rem;
+`;
+
+const SectionDivider = styled.div`
+  border-top: 1px solid #e1e4e8;
+  margin: 1.5rem 0;
+  padding-top: 1.5rem;
+`;
+
+const SectionTitle = styled.h2`
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
 `;
 
 const RepoGrid = styled.div`
@@ -85,8 +98,10 @@ const EmptyStateTitle = styled.h3`
  */
 function Home() {
   const navigate = useNavigate();
-  const { repositories, loading, error, loadUserRepositories } = useContext(RepositoryContext);
+  const { repositories, loading, error, loadUserRepositories, searchRepository } = useContext(RepositoryContext);
   const [loadingError, setLoadingError] = useState(null);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState(null);
   
   useEffect(() => {
     const fetchRepositories = async () => {
@@ -103,6 +118,22 @@ function Home() {
   const handleSelectRepo = (owner, name) => {
     navigate(`/repo/${owner}/${name}/issues`);
   };
+  
+  const handleSearch = async (repoString) => {
+    setSearchLoading(true);
+    setSearchError(null);
+    
+    try {
+      const repository = await searchRepository(repoString);
+      const [owner, repo] = repoString.split('/');
+      
+      // Navigate to the repository's issues page
+      navigate(`/repo/${owner}/${repo}/issues`);
+    } catch (err) {
+      setSearchError(err.message || 'Failed to find repository');
+      setSearchLoading(false);
+    }
+  };
 
   return (
     <Layout>
@@ -115,6 +146,27 @@ function Home() {
             </Subtitle>
           </Card.Body>
         </WelcomeCard>
+        
+        {/* Repository Search Section */}
+        <Card>
+          <Card.Body>
+            <SectionTitle>Search Any Repository</SectionTitle>
+            <RepoSearch onSearch={handleSearch} />
+            {searchLoading && <Loading message="Searching repository..." />}
+            {searchError && (
+              <Alert
+                variant="error"
+                title="Search Error"
+                message={searchError}
+                dismissible
+                onDismiss={() => setSearchError(null)}
+              />
+            )}
+          </Card.Body>
+        </Card>
+        
+        <SectionDivider />
+        <SectionTitle>Your Repositories</SectionTitle>
         
         {(error || loadingError) && (
           <Alert
