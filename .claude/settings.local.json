@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install axios react-router-dom zustand @octokit/rest styled-components)",
+      "Bash(mkdir -p src/models src/viewmodels src/views src/services src/utils src/hooks)",
+      "Bash(npm run dev)"
+    ],
+    "deny": []
+  }
+}

@@ -1,35 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { RepositoryProvider } from './context/RepositoryContext';
+import { IssueProvider } from './context/IssueContext';
+import RequireAuth from './views/components/RequireAuth';
+import Login from './views/pages/Login';
+import Home from './views/pages/Home';
+import IssuesList from './views/pages/IssuesList';
+import Settings from './views/pages/Settings';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <BrowserRouter>
+      <AuthProvider>
+        <RepositoryProvider>
+          <IssueProvider>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/login" element={<Login />} />
+              
+              {/* Protected routes */}
+              <Route 
+                path="/" 
+                element={
+                  <RequireAuth>
+                    <Home />
+                  </RequireAuth>
+                } 
+              />
+              <Route 
+                path="/repo/:owner/:repo/issues" 
+                element={
+                  <RequireAuth>
+                    <IssuesList />
+                  </RequireAuth>
+                } 
+              />
+              <Route 
+                path="/settings" 
+                element={
+                  <RequireAuth>
+                    <Settings />
+                  </RequireAuth>
+                } 
+              />
+              
+              {/* Fallback route */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </IssueProvider>
+        </RepositoryProvider>
+      </AuthProvider>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
