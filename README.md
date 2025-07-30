@@ -132,30 +132,26 @@ The application includes a dedicated view for browsing Auth0 organization reposi
 
 ## 🏢 Application Structure
 
-The application follows the MVVM (Model-View-ViewModel) architecture pattern with React Context for state management:
+The app uses MVVM pattern - here's how the pieces fit together:
 
 ```mermaid
 flowchart TD
-    A[🎨 Views<br/>React Components] --> B[🧠 Context<br/>State Management]
-    B --> C[🔧 Services<br/>API Calls]
-    C --> D[🌐 GitHub API<br/>External Data]
+    A[GitHub Issues Tracker]
     
-    A1[Home] --> A
-    A2[Issues List] --> A
-    A3[Auth0 Repos] --> A
-    A4[Settings] --> A
+    A --> V[View]
+    A --> VM[ViewModel]
+    A --> M[Model]
     
-    B1[Auth Context] --> B
-    B2[Repository Context] --> B
-    B3[Issue Context] --> B
+    V --> V1[Home]
+    V --> V2[Issues]
+    V --> V3[Repos]
+    V --> V4[Settings]
     
-    C1[GitHub Service] --> C
-    C2[PDF Service] --> C
+    VM --> VM1[State]
+    VM --> VM2[Actions]
     
-    style A fill:#e3f2fd
-    style B fill:#f3e5f5
-    style C fill:#e8f5e8
-    style D fill:#ffebee
+    M --> M1[GitHub API]
+    M --> M2[Storage]
 ```
 
 ### 📁 Directory Structure
