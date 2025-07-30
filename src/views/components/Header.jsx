@@ -3,6 +3,11 @@ import styled from 'styled-components';
 import { AuthContext } from '../../context/AuthContext';
 
 const HeaderContainer = styled.header`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   background-color: #24292e;
   color: white;
   padding: 0.75rem 1.5rem;
@@ -10,6 +15,11 @@ const HeaderContainer = styled.header`
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  height: 60px;
+  box-sizing: border-box;
+  margin: 0;
+  border: none;
+  width: 100%;
 `;
 
 const Logo = styled.div`

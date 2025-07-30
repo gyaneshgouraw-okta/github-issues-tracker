@@ -6,15 +6,18 @@ import { RepositoryContext } from '../../context/RepositoryContext';
 const SidebarContainer = styled.aside`
   position: fixed;
   left: ${props => props.isOpen ? '0' : '-250px'};
-  top: 53px; /* Header height */
+  top: 60px; /* Exactly below header */
   width: 250px;
-  height: calc(100vh - 53px);
+  height: calc(100vh - 60px);
   background-color: #f6f8fa;
   border-right: 1px solid #e1e4e8;
   transition: left 0.3s ease;
-  z-index: 100;
+  z-index: 999;
   overflow-y: auto;
   padding-bottom: 2rem;
+  box-sizing: border-box;
+  margin: 0;
+  padding-top: 0;
 `;
 
 const SectionTitle = styled.h3`
