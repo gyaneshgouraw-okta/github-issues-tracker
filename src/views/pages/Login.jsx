@@ -18,7 +18,7 @@ const LoginContainer = styled.div`
   height: 100vh;
   width: 100vw;
   padding: 1rem;
-  background: #1a1a1a;
+  background:rgb(30, 29, 29);
   position: fixed;
   top: 0;
   left: 0;
@@ -122,7 +122,7 @@ const GitHubRepoLink = styled(motion.a)`
     color: #ffffff;
     border-color: #555555;
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 16px rgba(16, 15, 15, 0.3);
     
     &::before {
       left: 100%;
@@ -190,7 +190,7 @@ const LinkText = styled.a`
 `;
 
 const StyledCard = styled(Card)`
-  background: linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 100%);
+  background:rgb(18, 18, 18);
   border: 1px solid #333333;
   box-shadow: 
     0 20px 40px rgba(0, 0, 0, 0.5),
