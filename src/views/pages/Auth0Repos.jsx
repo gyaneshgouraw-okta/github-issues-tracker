@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useActionState, useOptimistic, startTransition } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
 import Layout from '../components/Layout';
 import Card from '../components/Card';
 import Button from '../components/Button';
@@ -179,18 +180,109 @@ const StatLabel = styled.div`
   margin-top: 0.25rem;
 `;
 
+// PDF download action for useActionState
+async function downloadPDFAction(prevState, formData) {
+  try {
+    const repositories = formData.get('repositories');
+    const stats = formData.get('stats');
+    
+    const doc = new jsPDF();
+    
+    // Add title
+    doc.setFontSize(20);
+    doc.text('Auth0 Organization Repositories', 14, 22);
+    
+    // Add subtitle with date
+    doc.setFontSize(12);
+    doc.text(`Generated on ${new Date().toLocaleDateString()}`, 14, 32);
+    
+    // Add stats summary
+    doc.setFontSize(10);
+    const parsedStats = JSON.parse(stats);
+    const statsText = `Total: ${parsedStats.total} | With License: ${parsedStats.withLicense} | Private: ${parsedStats.private} | Forks: ${parsedStats.forks}`;
+    doc.text(statsText, 14, 42);
+    
+    // Add table using autoTable for better formatting
+    const parsedRepos = JSON.parse(repositories);
+    const tableData = parsedRepos.map((repo, index) => [
+      index + 1,
+      repo.name,
+      repo.license ? repo.license.name : 'No license',
+      repo.language || 'N/A',
+      repo.stargazers_count.toLocaleString(),
+      repo.forks_count.toLocaleString(),
+      new Date(repo.updated_at).toLocaleDateString(),
+      repo.private ? 'Yes' : 'No',
+      repo.fork ? 'Yes' : 'No'
+    ]);
+    
+    doc.autoTable({
+      head: [['#', 'Repository', 'License', 'Language', 'Stars', 'Forks', 'Updated', 'Private', 'Fork']],
+      body: tableData,
+      startY: 50,
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [41, 128, 185] },
+      columnStyles: {
+        0: { cellWidth: 10 },
+        1: { cellWidth: 40 },
+        2: { cellWidth: 30 },
+        3: { cellWidth: 20 },
+        4: { cellWidth: 15 },
+        5: { cellWidth: 15 },
+        6: { cellWidth: 25 },
+        7: { cellWidth: 15 },
+        8: { cellWidth: 15 }
+      }
+    });
+    
+    // Save the PDF
+    doc.save(`auth0-repositories-${new Date().toISOString().split('T')[0]}.pdf`);
+    
+    return { success: true, message: 'PDF downloaded successfully!' };
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    return { success: false, message: 'Failed to generate PDF' };
+  }
+}
+
 function Auth0Repos() {
   const [repositories, setRepositories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [downloadingPdf, setDownloadingPdf] = useState(false);
+  
+  // React 19: useActionState for PDF download
+  const [downloadState, downloadAction, isPending] = useActionState(downloadPDFAction, {
+    success: false,
+    message: ''
+  });
+  
+  // React 19: useOptimistic for optimistic UI updates
+  const [optimisticRepos, setOptimisticRepos] = useOptimistic(
+    repositories,
+    (state, optimisticValue) => {
+      if (optimisticValue.type === 'loading') {
+        return [];
+      }
+      return optimisticValue.data || state;
+    }
+  );
 
   useEffect(() => {
     const fetchAuth0Repos = async () => {
       try {
         setLoading(true);
+        
+        // React 19: Use startTransition for better UX
+        startTransition(() => {
+          setOptimisticRepos({ type: 'loading' });
+        });
+        
         const repos = await githubService.getOrganizationRepositories('auth0');
-        setRepositories(repos);
+        
+        startTransition(() => {
+          setRepositories(repos);
+          setOptimisticRepos({ type: 'success', data: repos });
+        });
       } catch (err) {
         setError(err.message || 'Failed to fetch Auth0 repositories');
       } finally {
@@ -201,110 +293,20 @@ function Auth0Repos() {
     fetchAuth0Repos();
   }, []);
 
-  const downloadPDF = async () => {
-    try {
-      setDownloadingPdf(true);
-      
-      const doc = new jsPDF();
-      
-      // Add title
-      doc.setFontSize(20);
-      doc.text('Auth0 Organization Repositories', 14, 22);
-      
-      // Add subtitle with date
-      doc.setFontSize(12);
-      doc.text(`Generated on ${new Date().toLocaleDateString()}`, 14, 32);
-      
-      // Add stats summary
-      doc.setFontSize(10);
-      const statsText = `Total: ${stats.total} | With License: ${stats.withLicense} | Private: ${stats.private} | Forks: ${stats.forks}`;
-      doc.text(statsText, 14, 42);
-      
-      // Add table header
-      doc.setFontSize(8);
-      doc.setFont(undefined, 'bold');
-      let yPosition = 55;
-      const lineHeight = 6;
-      const leftMargin = 14;
-      
-      // Table headers
-      doc.text('#', leftMargin, yPosition);
-      doc.text('Repository', leftMargin + 15, yPosition);
-      doc.text('License', leftMargin + 80, yPosition);
-      doc.text('Language', leftMargin + 130, yPosition);
-      doc.text('Stars', leftMargin + 160, yPosition);
-      doc.text('Forks', leftMargin + 180, yPosition);
-      
-      // Draw header line
-      yPosition += 2;
-      doc.line(leftMargin, yPosition, 195, yPosition);
-      yPosition += 4;
-      
-      // Add table rows
-      doc.setFont(undefined, 'normal');
-      repositories.forEach((repo, index) => {
-        // Check if we need a new page
-        if (yPosition > 270) {
-          doc.addPage();
-          yPosition = 20;
-        }
-        
-        const rowNumber = (index + 1).toString();
-        const repoName = repo.name; // Show full repository name
-        const license = repo.license ? (repo.license.name.length > 18 ? repo.license.name.substring(0, 18) + '...' : repo.license.name) : 'No license';
-        const language = repo.language ? (repo.language.length > 12 ? repo.language.substring(0, 12) + '...' : repo.language) : 'N/A';
-        const stars = repo.stargazers_count.toLocaleString();
-        const forks = repo.forks_count.toLocaleString();
-        
-        // Add row number
-        doc.text(rowNumber, leftMargin, yPosition);
-        
-        // Add repository name as hyperlink
-        doc.setTextColor(0, 105, 218); // Blue color for links
-        doc.textWithLink(repoName, leftMargin + 15, yPosition, { url: repo.html_url });
-        
-        // Add license as hyperlink (if available) or regular text
-        if (repo.license) {
-          doc.textWithLink(license, leftMargin + 80, yPosition, { url: repo.license.html_url });
-        } else {
-          doc.setTextColor(0, 0, 0); // Black color for non-links
-          doc.text(license, leftMargin + 80, yPosition);
-        }
-        
-        // Reset color to black for other columns
-        doc.setTextColor(0, 0, 0);
-        doc.text(language, leftMargin + 130, yPosition);
-        doc.text(stars, leftMargin + 160, yPosition);
-        doc.text(forks, leftMargin + 180, yPosition);
-        
-        yPosition += lineHeight;
-      });
-      
-      // Add footer
-      const pageCount = doc.internal.getNumberOfPages();
-      for (let i = 1; i <= pageCount; i++) {
-        doc.setPage(i);
-        doc.setFontSize(8);
-        doc.text(`Page ${i} of ${pageCount}`, 14, 285);
-        doc.text('Generated by GitHub Issues Tracker', 150, 285);
-      }
-      
-      // Save the PDF
-      doc.save(`auth0-repositories-${new Date().toISOString().split('T')[0]}.pdf`);
-      
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      // You could show an error message to the user here
-    } finally {
-      setDownloadingPdf(false);
-    }
+  // Handle PDF download using the new action
+  const handleDownloadPDF = () => {
+    const formData = new FormData();
+    formData.append('repositories', JSON.stringify(optimisticRepos));
+    formData.append('stats', JSON.stringify(stats));
+    downloadAction(formData);
   };
 
+  // Use optimistic repos for stats calculation
   const stats = {
-    total: repositories.length,
-    withLicense: repositories.filter(repo => repo.license).length,
-    private: repositories.filter(repo => repo.private).length,
-    forks: repositories.filter(repo => repo.fork).length,
+    total: optimisticRepos.length,
+    withLicense: optimisticRepos.filter(repo => repo.license).length,
+    private: optimisticRepos.filter(repo => repo.private).length,
+    forks: optimisticRepos.filter(repo => repo.fork).length,
   };
 
   if (loading) {
@@ -343,21 +345,20 @@ function Auth0Repos() {
                   Overview of all repositories under the Auth0 organization with license information.
                 </Subtitle>
               </HeaderContent>
-              <DownloadButton 
-                onClick={downloadPDF} 
-                disabled={downloadingPdf || repositories.length === 0}
-                variant="primary"
+              <DownloadButton
+                onClick={handleDownloadPDF}
+                disabled={optimisticRepos.length === 0 || isPending}
               >
-                {downloadingPdf ? (
+                {isPending ? (
                   <>
-                    <SpinnerIcon width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <SpinnerIcon width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                       <path d="M21 12a9 9 0 11-6.219-8.56"/>
                     </SpinnerIcon>
                     Generating...
                   </>
                 ) : (
                   <>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '0.5rem' }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" style={{ marginRight: '0.5rem' }}>
                       <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
                       <polyline points="7,10 12,15 17,10"/>
                       <line x1="12" y1="15" x2="12" y2="3"/>
@@ -367,6 +368,15 @@ function Auth0Repos() {
                 )}
               </DownloadButton>
             </HeaderSection>
+            
+            {/* React 19: Display action state feedback */}
+            {downloadState.message && (
+              <Alert
+                variant={downloadState.success ? "success" : "error"}
+                title={downloadState.success ? "Success" : "Error"}
+                message={downloadState.message}
+              />
+            )}
             
             <StatsContainer>
               <StatCard>
@@ -412,7 +422,7 @@ function Auth0Repos() {
                   </tr>
                 </thead>
                 <tbody>
-                  {repositories.map(repo => (
+                  {optimisticRepos.map(repo => (
                     <TableRow key={repo.id}>
                       <TableCell>
                         <div>

@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useActionState, startTransition, useEffect } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AuthContext } from '../../context/AuthContext';
@@ -59,41 +59,76 @@ const LinkText = styled.a`
   }
 `;
 
+// Authentication action for useActionState - React 19 compliant
+async function authenticateAction(prevState, formData) {
+  const token = formData.get('token');
+  
+  if (!token?.trim()) {
+    return {
+      success: false,
+      error: 'Please enter a valid GitHub token',
+      token: '',
+      shouldAuthenticate: false
+    };
+  }
+  
+  try {
+    // Return success state with token for authentication
+    return {
+      success: true,
+      error: null,
+      token: token,
+      shouldAuthenticate: true
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || 'Authentication failed',
+      token: token,
+      shouldAuthenticate: false
+    };
+  }
+}
+
 /**
  * Login page component
  */
 function Login() {
   const [token, setToken] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { isAuthenticated, error, authenticate, clearError } = useContext(AuthContext);
   const navigate = useNavigate();
+  
+  // React 19: useActionState for form handling
+  const [authState, authAction, isPending] = useActionState(authenticateAction, {
+    success: false,
+    error: null,
+    token: '',
+    shouldAuthenticate: false
+  });
+  
+  // Handle authentication when action succeeds
+  useEffect(() => {
+    if (authState.shouldAuthenticate && authState.token) {
+      startTransition(async () => {
+        try {
+          await authenticate(authState.token);
+          navigate('/');
+        } catch (err) {
+          // Error handled by AuthContext
+          console.error('Authentication failed:', err);
+        }
+      });
+    }
+  }, [authState.shouldAuthenticate, authState.token, authenticate, navigate]);
   
   // Redirect to home if already authenticated
   if (isAuthenticated) {
     return <Navigate to="/" replace />;
   }
-  
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!token.trim()) {
-      return;
-    }
-    
-    setIsSubmitting(true);
-    try {
-      await authenticate(token);
-      navigate('/');
-    } catch (err) {
-      // Error state is handled by the AuthContext
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   return (
     <LoginContainer>
-      <LoginForm onSubmit={handleSubmit}>
+      <LoginForm action={authAction}>
         <LogoContainer>
           <Logo>
             <svg width="32" height="32" viewBox="0 0 16 16" fill="currentColor">
@@ -118,6 +153,7 @@ function Login() {
             <FormGroup>
               <Input
                 id="token"
+                name="token"
                 label="GitHub Personal Access Token"
                 type="password"
                 placeholder="Enter your GitHub token"
@@ -137,12 +173,21 @@ function Login() {
               </HelpText>
             </FormGroup>
             
+            {/* React 19: Show action state error */}
+            {authState.error && (
+              <Alert 
+                variant="error" 
+                title="Validation Error"
+                message={authState.error}
+              />
+            )}
+            
             <Button 
               type="submit" 
               fullWidth
-              disabled={isSubmitting || !token.trim()}
+              disabled={isPending || !token.trim()}
             >
-              {isSubmitting ? 'Signing in...' : 'Sign in with GitHub Token'}
+              {isPending ? 'Signing in...' : 'Sign in with GitHub Token'}
             </Button>
           </Card.Body>
         </Card>

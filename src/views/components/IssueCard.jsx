@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useCallback, memo } from 'react';
 import styled from 'styled-components';
 import Card from './Card';
 import { formatDate, getTimeDifference } from '../../utils/dateUtils';
@@ -153,6 +153,7 @@ const ReviewButton = styled.button`
  * @param {Object} props - Component props
  * @param {Object} props.issue - Issue data
  */
+'use memo'; // React Compiler annotation for memoization
 function IssueCard({ issue }) {
   const [showComments, setShowComments] = useState(false);
   const { markIssueAsReviewed } = useContext(IssueContext);
@@ -160,9 +161,14 @@ function IssueCard({ issue }) {
   // Calculate time elapsed after closure
   const timeAfterClosure = getTimeDifference(issue.closed_at, issue.postClosureComments[0]?.created_at);
   
-  const handleMarkAsReviewed = () => {
+  // React 19: useCallback for stable references
+  const handleMarkAsReviewed = useCallback(() => {
     markIssueAsReviewed(issue.id);
-  };
+  }, [markIssueAsReviewed, issue.id]);
+  
+  const toggleComments = useCallback(() => {
+    setShowComments(prev => !prev);
+  }, []);
   
   return (
     <Card>
@@ -227,7 +233,7 @@ function IssueCard({ issue }) {
           <div>
             <CommentCount>{issue.postClosureComments.length} post-closure comment{issue.postClosureComments.length !== 1 ? 's' : ''}</CommentCount>
           </div>
-          <CommentExpandToggle onClick={() => setShowComments(!showComments)}>
+          <CommentExpandToggle onClick={toggleComments}>
             {showComments ? 'Hide comments' : 'Show comments'}
           </CommentExpandToggle>
         </CommentHeader>
@@ -251,4 +257,5 @@ function IssueCard({ issue }) {
   );
 }
 
-export default IssueCard;
+// React 19: Memo wrapper for performance optimization
+export default memo(IssueCard);
