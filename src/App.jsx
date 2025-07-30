@@ -7,6 +7,7 @@ import Login from './views/pages/Login';
 import Home from './views/pages/Home';
 import IssuesList from './views/pages/IssuesList';
 import Settings from './views/pages/Settings';
+import Auth0Repos from './views/pages/Auth0Repos';
 import './App.css';
 
 function App() {
@@ -41,6 +42,14 @@ function App() {
                 element={
                   <RequireAuth>
                     <Settings />
+                  </RequireAuth>
+                } 
+              />
+              <Route 
+                path="/auth0-repos" 
+                element={
+                  <RequireAuth>
+                    <Auth0Repos />
                   </RequireAuth>
                 } 
               />

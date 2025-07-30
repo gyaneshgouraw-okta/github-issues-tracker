@@ -146,6 +146,68 @@ class GitHubService {
       throw new Error(`Failed to fetch issues with post-closure comments for ${owner}/${repo}`);
     }
   }
+
+  /**
+   * Get repositories for a specific organization with license information
+   * @param {string} org - Organization name
+   * @returns {Promise<Array>} - List of repositories with license info
+   */
+  async getOrganizationRepositories(org) {
+    try {
+      const { data } = await this.octokit.repos.listForOrg({
+        org,
+        sort: "updated",
+        per_page: 100,
+      });
+      
+      // Fetch license information for each repository
+      const reposWithLicense = await Promise.all(
+        data.map(async (repo) => {
+          try {
+            // Get license information
+            let licenseInfo = null;
+            if (repo.license) {
+              licenseInfo = {
+                name: repo.license.name,
+                spdx_id: repo.license.spdx_id,
+                url: repo.license.url,
+                html_url: `https://github.com/${repo.full_name}/blob/${repo.default_branch}/LICENSE`
+              };
+            }
+            
+            return {
+              id: repo.id,
+              name: repo.name,
+              full_name: repo.full_name,
+              description: repo.description,
+              html_url: repo.html_url,
+              private: repo.private,
+              fork: repo.fork,
+              created_at: repo.created_at,
+              updated_at: repo.updated_at,
+              pushed_at: repo.pushed_at,
+              stargazers_count: repo.stargazers_count,
+              watchers_count: repo.watchers_count,
+              forks_count: repo.forks_count,
+              language: repo.language,
+              license: licenseInfo,
+              default_branch: repo.default_branch
+            };
+          } catch (error) {
+            // If there's an error fetching license info, return repo without license
+            return {
+              ...repo,
+              license: null
+            };
+          }
+        })
+      );
+      
+      return reposWithLicense;
+    } catch (error) {
+      throw new Error(`Failed to fetch repositories for organization: ${org}`);
+    }
+  }
 }
 
 // Create singleton instance
