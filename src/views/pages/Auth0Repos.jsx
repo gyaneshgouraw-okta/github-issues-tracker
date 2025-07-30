@@ -256,9 +256,23 @@ function Auth0Repos() {
         const stars = repo.stargazers_count.toLocaleString();
         const forks = repo.forks_count.toLocaleString();
         
+        // Add row number
         doc.text(rowNumber, leftMargin, yPosition);
-        doc.text(repoName, leftMargin + 15, yPosition);
-        doc.text(license, leftMargin + 80, yPosition);
+        
+        // Add repository name as hyperlink
+        doc.setTextColor(0, 105, 218); // Blue color for links
+        doc.textWithLink(repoName, leftMargin + 15, yPosition, { url: repo.html_url });
+        
+        // Add license as hyperlink (if available) or regular text
+        if (repo.license) {
+          doc.textWithLink(license, leftMargin + 80, yPosition, { url: repo.license.html_url });
+        } else {
+          doc.setTextColor(0, 0, 0); // Black color for non-links
+          doc.text(license, leftMargin + 80, yPosition);
+        }
+        
+        // Reset color to black for other columns
+        doc.setTextColor(0, 0, 0);
         doc.text(language, leftMargin + 130, yPosition);
         doc.text(stars, leftMargin + 160, yPosition);
         doc.text(forks, leftMargin + 180, yPosition);
