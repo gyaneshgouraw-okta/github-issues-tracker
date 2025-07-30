@@ -2,109 +2,310 @@ import { useContext, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { RepositoryContext } from '../../context/RepositoryContext';
+import { Search, Home, Settings, BookOpen, Star, GitBranch, Clock } from 'lucide-react';
 
 const SidebarContainer = styled.aside`
   position: fixed;
   left: ${props => props.isOpen ? '0' : '-280px'};
-  top: 60px; /* Exactly below header */
-  width: 280px;
+  top: 60px;
+  width: 300px;
   height: calc(100vh - 60px);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
-  backdrop-filter: blur(12px);
-  border-right: 1px solid rgba(226, 232, 240, 0.8);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(180deg, 
+    rgba(255, 255, 255, 0.98) 0%, 
+    rgba(248, 250, 252, 0.95) 100%
+  );
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(226, 232, 240, 0.6);
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   z-index: 999;
   overflow-y: auto;
-  padding-bottom: 2rem;
+  overflow-x: hidden;
   box-sizing: border-box;
-  margin: 0;
-  padding-top: 1rem;
+  padding: 1.5rem 0;
   box-shadow: 
-    0 4px 6px -1px rgba(0, 0, 0, 0.05),
-    0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    0 10px 25px -5px rgba(0, 0, 0, 0.08),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  
+  /* Custom scrollbar */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.3);
+    border-radius: 3px;
+    
+    &:hover {
+      background: rgba(156, 163, 175, 0.5);
+    }
+  }
 `;
 
 const SectionTitle = styled.h3`
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: uppercase;
-  margin: 1rem 0 0.5rem;
-  padding: 0 1rem;
-  color: #586069;
+  letter-spacing: 0.05em;
+  margin: 2rem 0 1rem;
+  padding: 0 1.5rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  &:first-child {
+    margin-top: 0;
+  }
+  
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, rgba(148, 163, 184, 0.2), transparent);
+  }
 `;
 
 const RepoList = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 `;
 
-const RepoItem = styled.li`
-  padding: 0.75rem 1.5rem;
+const RepoCard = styled.li`
+  margin: 0 1rem;
+  border-radius: 12px;
   cursor: pointer;
-  border-radius: 8px;
-  margin: 0 0.75rem 0.25rem;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  border-left: 3px solid ${props => props.active ? '#0366d6' : 'transparent'};
-  background-color: ${props => props.active ? 'rgba(3, 102, 214, 0.05)' : 'transparent'};
-  transition: background-color 0.2s;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  background: ${props => props.active 
+    ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(59, 130, 246, 0.05) 100%)'
+    : 'rgba(255, 255, 255, 0.4)'
+  };
+  border: 1px solid ${props => props.active 
+    ? 'rgba(99, 102, 241, 0.2)' 
+    : 'rgba(226, 232, 240, 0.5)'
+  };
+  backdrop-filter: blur(8px);
   
   &:hover {
-    background-color: ${props => props.active ? 'rgba(3, 102, 214, 0.05)' : '#eaecef'};
+    transform: translateY(-1px);
+    background: ${props => props.active 
+      ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(59, 130, 246, 0.08) 100%)'
+      : 'rgba(255, 255, 255, 0.7)'
+    };
+    border-color: ${props => props.active 
+      ? 'rgba(99, 102, 241, 0.3)' 
+      : 'rgba(99, 102, 241, 0.2)'
+    };
+    box-shadow: 
+      0 4px 12px -2px rgba(0, 0, 0, 0.08),
+      0 2px 6px -1px rgba(0, 0, 0, 0.04);
+  }
+  
+  &:active {
+    transform: translateY(0);
   }
 `;
 
-const RepoName = styled.span`
-  font-size: 0.9rem;
-  color: ${props => props.active ? '#0366d6' : '#24292e'};
-  display: block;
+const RepoCardContent = styled.div`
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+const RepoHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+`;
+
+const RepoIcon = styled.div`
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: ${props => props.active 
+    ? 'linear-gradient(135deg, #6366f1 0%, #3b82f6 100%)'
+    : 'linear-gradient(135deg, #64748b 0%, #475569 100%)'
+  };
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 14px;
+  flex-shrink: 0;
+`;
+
+const RepoInfo = styled.div`
+  flex: 1;
+  min-width: 0;
+`;
+
+const RepoName = styled.div`
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: ${props => props.active ? '#6366f1' : '#1e293b'};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 100%;
+  line-height: 1.2;
+`;
+
+const RepoMeta = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: #64748b;
+`;
+
+const MetaItem = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 `;
 
 const NavMenu = styled.nav`
-  margin-top: 1rem;
+  margin-bottom: 1rem;
 `;
 
 const NavList = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 `;
 
 const NavItem = styled.li`
-  padding: 0.5rem 1rem;
+  margin: 0 1rem;
+  border-radius: 10px;
   cursor: pointer;
-  border-left: 3px solid ${props => props.active ? '#0366d6' : 'transparent'};
-  background-color: ${props => props.active ? 'rgba(3, 102, 214, 0.05)' : 'transparent'};
-  transition: background-color 0.2s;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  background: ${props => props.active 
+    ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(59, 130, 246, 0.08) 100%)'
+    : 'transparent'
+  };
   
   &:hover {
-    background-color: ${props => props.active ? 'rgba(3, 102, 214, 0.05)' : '#eaecef'};
+    background: ${props => props.active 
+      ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(59, 130, 246, 0.12) 100%)'
+      : 'rgba(255, 255, 255, 0.5)'
+    };
+    transform: translateX(2px);
   }
 `;
 
 const NavLink = styled.div`
   display: flex;
   align-items: center;
-  color: ${props => props.active ? '#0366d6' : '#24292e'};
-  font-size: 0.9rem;
+  padding: 0.875rem 1rem;
+  color: ${props => props.active ? '#6366f1' : '#475569'};
+  font-size: 0.875rem;
+  font-weight: ${props => props.active ? '600' : '500'};
+  gap: 0.75rem;
+  border-radius: 10px;
   
   svg {
-    margin-right: 0.75rem;
+    width: 18px;
+    height: 18px;
+    opacity: ${props => props.active ? '1' : '0.7'};
   }
+`;
+
+const SearchContainer = styled.div`
+  position: relative;
+  margin: 0 1rem 1rem;
 `;
 
 const SearchInput = styled.input`
   width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #e1e4e8;
-  border-radius: 4px;
-  margin: 0.5rem 0;
-  font-size: 0.85rem;
+  padding: 0.875rem 1rem 0.875rem 2.75rem;
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  border-radius: 12px;
+  font-size: 0.875rem;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  box-sizing: border-box;
+  
+  &::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: rgba(99, 102, 241, 0.4);
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 
+      0 0 0 3px rgba(99, 102, 241, 0.1),
+      0 4px 12px -2px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+  }
 `;
+
+const SearchIcon = styled.div`
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+  
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+`;
+
+// Helper function to get language colors
+const getLanguageColor = (language) => {
+  const colors = {
+    JavaScript: '#f1e05a',
+    TypeScript: '#2b7489',
+    Python: '#3572A5',
+    Java: '#b07219',
+    HTML: '#e34c26',
+    CSS: '#563d7c',
+    PHP: '#4F5D95',
+    Ruby: '#701516',
+    Go: '#00ADD8',
+    Rust: '#dea584',
+    Swift: '#ffac45',
+    Kotlin: '#F18E33',
+    C: '#555555',
+    'C++': '#f34b7d',
+    'C#': '#239120',
+    Shell: '#89e051',
+    Vue: '#2c3e50',
+    React: '#61dafb',
+    default: '#64748b'
+  };
+  return colors[language] || colors.default;
+};
+
+// Helper function to format dates
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffTime = Math.abs(now - date);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  if (diffDays === 1) return '1d ago';
+  if (diffDays < 7) return `${diffDays}d ago`;
+  if (diffDays < 30) return `${Math.ceil(diffDays / 7)}w ago`;
+  if (diffDays < 365) return `${Math.ceil(diffDays / 30)}mo ago`;
+  return `${Math.ceil(diffDays / 365)}y ago`;
+};
 
 /**
  * Sidebar component for navigation and repository selection
@@ -143,17 +344,13 @@ function Sidebar({ isOpen }) {
           </NavItem>
           <NavItem active={location.pathname.includes('/settings')} onClick={() => navigate('/settings')}>
             <NavLink active={location.pathname.includes('/settings')}>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path fillRule="evenodd" d="M7.429 1.525a6.593 6.593 0 011.142 0c.036.003.108.036.137.146l.289 1.105c.147.56.55.967.997 1.189.174.086.341.183.501.29.417.278.97.423 1.53.27l1.102-.303c.11-.03.175.016.195.046.219.31.41.641.573.989.014.031.022.11-.059.19l-.815.806c-.411.406-.562.957-.53 1.456a4.588 4.588 0 010 .582c-.032.499.119 1.05.53 1.456l.815.806c.08.08.073.159.059.19a6.494 6.494 0 01-.573.99c-.02.029-.086.074-.195.045l-1.103-.303c-.559-.153-1.112-.008-1.529.27-.16.107-.327.204-.5.29-.449.222-.851.628-.998 1.189l-.289 1.105c-.029.11-.101.143-.137.146a6.613 6.613 0 01-1.142 0c-.036-.003-.108-.037-.137-.146l-.289-1.105c-.147-.56-.55-.967-.997-1.189a4.502 4.502 0 01-.501-.29c-.417-.278-.97-.423-1.53-.27l-1.102.303c-.11.03-.175-.016-.195-.046a6.492 6.492 0 01-.573-.989c-.014-.031-.022-.11.059-.19l.815-.806c.411-.406.562-.957.53-1.456a4.587 4.587 0 010-.582c.032-.499-.119-1.05-.53-1.456l-.815-.806c-.08-.08-.073-.159-.059-.19a6.44 6.44 0 01.573-.99c.02-.029.086-.075.195-.045l1.103.303c.559.153 1.112.008 1.529-.27.16-.107.327-.204.5-.29.449-.222.851-.628.998-1.189l.289-1.105c.029-.11.101-.143.137-.146zM8 0c-.236 0-.47.01-.701.03-.743.065-1.29.615-1.458 1.261l-.29 1.106c-.017.066-.078.158-.211.224a5.994 5.994 0 00-.668.386c-.123.082-.233.09-.3.071L3.27 2.776c-.644-.177-1.392.02-1.82.63a7.977 7.977 0 00-.704 1.217c-.315.675-.111 1.422.363 1.891l.815.806c.05.048.098.147.088.294a6.084 6.084 0 000 .772c.01.147-.038.246-.088.294l-.815.806c-.474.469-.678 1.216-.363 1.891.2.428.436.835.704 1.218.428.609 1.176.806 1.82.63l1.103-.303c.066-.019.176-.011.299.071.213.143.436.272.668.386.133.066.194.158.212.224l.289 1.106c.169.646.715 1.196 1.458 1.26a8.094 8.094 0 001.402 0c.743-.064 1.29-.614 1.458-1.26l.29-1.106c.017-.066.078-.158.211-.224a5.98 5.98 0 00.668-.386c.123-.082.233-.09.3-.071l1.102.302c.644.177 1.392-.02 1.82-.63.268-.382.505-.789.704-1.217.315-.675.111-1.422-.364-1.891l-.814-.806c-.05-.048-.098-.147-.088-.294a6.1 6.1 0 000-.772c-.01-.147.039-.246.088-.294l.814-.806c.475-.469.679-1.216.364-1.891a7.992 7.992 0 00-.704-1.218c-.428-.609-1.176-.806-1.82-.63l-1.103.303c-.066.019-.176.011-.299-.071a5.991 5.991 0 00-.668-.386c-.133-.066-.194-.158-.212-.224L10.16 1.29C9.99.645 9.444.095 8.701.031A8.094 8.094 0 008 0zm1.5 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM11 8a3 3 0 11-6 0 3 3 0 016 0z"></path>
-              </svg>
+              <Settings />
               Settings
             </NavLink>
           </NavItem>
           <NavItem active={location.pathname.includes('/auth0-repos')} onClick={() => navigate('/auth0-repos')}>
             <NavLink active={location.pathname.includes('/auth0-repos')}>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path fillRule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 10.5v-8zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path>
-              </svg>
+              <BookOpen />
               Auth0 Repos
             </NavLink>
           </NavItem>
@@ -162,27 +359,74 @@ function Sidebar({ isOpen }) {
 
       {repositories.length > 0 && (
         <>
-          <SectionTitle>Repositories</SectionTitle>
-          <div style={{ padding: '0 1rem' }}>
+          <SectionTitle>
+            <GitBranch size={14} />
+            Repositories
+          </SectionTitle>
+          <SearchContainer>
+            <SearchIcon>
+              <Search />
+            </SearchIcon>
             <SearchInput
               type="text"
               placeholder="Search repositories..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-          </div>
+          </SearchContainer>
           <RepoList>
-            {filteredRepos.map(repo => (
-              <RepoItem 
-                key={repo.id} 
-                active={selectedRepo && selectedRepo.id === repo.id}
-                onClick={() => handleSelectRepo(repo.owner.login, repo.name)}
-              >
-                <RepoName active={selectedRepo && selectedRepo.id === repo.id}>
-                  {repo.full_name}
-                </RepoName>
-              </RepoItem>
-            ))}
+            {filteredRepos.map(repo => {
+              const isActive = selectedRepo && selectedRepo.id === repo.id;
+              const repoInitials = repo.name
+                .split('-')
+                .map(word => word.charAt(0).toUpperCase())
+                .join('')
+                .substring(0, 2);
+              
+              return (
+                <RepoCard 
+                  key={repo.id} 
+                  active={isActive}
+                  onClick={() => handleSelectRepo(repo.owner.login, repo.name)}
+                >
+                  <RepoCardContent>
+                    <RepoHeader>
+                      <RepoIcon active={isActive}>
+                        {repoInitials}
+                      </RepoIcon>
+                      <RepoInfo>
+                        <RepoName active={isActive}>
+                          {repo.name}
+                        </RepoName>
+                        <RepoMeta>
+                          {repo.stargazers_count > 0 && (
+                            <MetaItem>
+                              <Star size={12} />
+                              {repo.stargazers_count}
+                            </MetaItem>
+                          )}
+                          {repo.language && (
+                            <MetaItem>
+                              <div style={{
+                                width: '8px',
+                                height: '8px',
+                                borderRadius: '50%',
+                                backgroundColor: getLanguageColor(repo.language)
+                              }} />
+                              {repo.language}
+                            </MetaItem>
+                          )}
+                          <MetaItem>
+                            <Clock size={12} />
+                            {formatDate(repo.updated_at)}
+                          </MetaItem>
+                        </RepoMeta>
+                      </RepoInfo>
+                    </RepoHeader>
+                  </RepoCardContent>
+                </RepoCard>
+              );
+            })}
           </RepoList>
         </>
       )}
