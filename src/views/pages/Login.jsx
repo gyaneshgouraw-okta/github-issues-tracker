@@ -18,11 +18,36 @@ const LoginContainer = styled.div`
   height: 100vh;
   width: 100vw;
   padding: 1rem;
-  background:rgb(30, 29, 29);
+  background: linear-gradient(135deg, 
+    rgba(30, 41, 59, 0.98) 0%, 
+    rgba(51, 65, 85, 0.95) 25%,
+    rgba(71, 85, 105, 0.92) 50%,
+    rgba(51, 65, 85, 0.95) 75%,
+    rgba(30, 41, 59, 0.98) 100%
+  );
+  backdrop-filter: blur(20px);
   position: fixed;
   top: 0;
   left: 0;
   overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 20%, 
+      rgba(99, 102, 241, 0.1) 0%, 
+      transparent 50%
+    ), 
+    radial-gradient(circle at 70% 80%, 
+      rgba(16, 185, 129, 0.08) 0%, 
+      transparent 50%
+    );
+    pointer-events: none;
+  }
 `;
 
 const LoginForm = styled(motion.form)`
@@ -52,11 +77,12 @@ const Logo = styled.div`
   align-items: center;
   font-family: ${theme.typography.fontFamily.sans.join(', ')};
   letter-spacing: -0.02em;
-  text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
   
   svg {
     margin-right: 1rem;
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+    filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.4));
+    color: #6366f1;
   }
 `;
 
@@ -64,11 +90,11 @@ const FaviconLogo = styled.img`
   width: 2.5rem;
   height: 2.5rem;
   margin-right: 1rem;
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+  filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.4));
   transition: all 0.3s ease;
   
   &:hover {
-    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
+    filter: drop-shadow(0 0 16px rgba(99, 102, 241, 0.6));
     transform: scale(1.05);
   }
 `;
@@ -79,7 +105,7 @@ const FooterContainer = styled(motion.div)`
   align-items: center;
   margin-top: 2rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #333333;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   
   @media (max-height: 600px) {
     margin-top: 1rem;
@@ -91,14 +117,18 @@ const GitHubRepoLink = styled(motion.a)`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #b3b3b3;
+  color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 500;
   padding: 0.75rem 1rem;
   border-radius: ${theme.borderRadius.lg};
-  border: 1px solid #333333;
-  background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, 
+    rgba(30, 41, 59, 0.6) 0%, 
+    rgba(51, 65, 85, 0.4) 100%
+  );
+  backdrop-filter: blur(10px);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -120,9 +150,15 @@ const GitHubRepoLink = styled(motion.a)`
   
   &:hover {
     color: #ffffff;
-    border-color: #555555;
+    border-color: rgba(99, 102, 241, 0.4);
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(16, 15, 15, 0.3);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(99, 102, 241, 0.2);
+    background: linear-gradient(135deg, 
+      rgba(30, 41, 59, 0.8) 0%, 
+      rgba(51, 65, 85, 0.6) 100%
+    );
     
     &::before {
       left: 100%;
@@ -130,13 +166,14 @@ const GitHubRepoLink = styled(motion.a)`
     
     svg {
       transform: scale(1.1);
+      color: #6366f1;
     }
   }
   
   svg {
     width: 16px;
     height: 16px;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
   }
 `;
 
@@ -150,7 +187,7 @@ const FormGroup = styled(motion.div)`
 
 const HelpText = styled.p`
   font-size: 0.875rem;
-  color: #b3b3b3;
+  color: rgba(255, 255, 255, 0.7);
   margin-top: 1rem;
   line-height: 1.6;
   font-family: ${theme.typography.fontFamily.sans.join(', ')};
@@ -162,7 +199,7 @@ const HelpText = styled.p`
 `;
 
 const LinkText = styled.a`
-  color: #ffffff;
+  color: #6366f1;
   text-decoration: none;
   font-weight: 600;
   transition: all 0.3s ease;
@@ -175,43 +212,47 @@ const LinkText = styled.a`
     left: 0;
     width: 0;
     height: 1px;
-    background: #ffffff;
+    background: #6366f1;
     transition: width 0.3s ease;
   }
   
   &:hover {
-    color: #ffffff;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    color: #818cf8;
+    text-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
     
     &::after {
       width: 100%;
+      background: #818cf8;
     }
   }
 `;
 
 const StyledCard = styled(Card)`
-  background:rgb(18, 18, 18);
-  border: 1px solid #333333;
+  background: linear-gradient(135deg, 
+    rgba(30, 41, 59, 0.8) 0%, 
+    rgba(51, 65, 85, 0.6) 50%,
+    rgba(71, 85, 105, 0.4) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.5),
-    0 8px 16px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 25px 50px rgba(0, 0, 0, 0.5),
+    0 12px 24px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
   border-radius: ${theme.borderRadius.xl};
-  overflow: hidden;
   position: relative;
-  transition: all 0.3s ease;
+  overflow: hidden;
   
   &::before {
     content: '';
     position: absolute;
     top: 0;
-    left: 0;
-    right: 0;
+    left: -100%;
+    width: 100%;
     height: 2px;
     background: linear-gradient(90deg, 
       transparent 0%, 
-      #ffffff 20%, 
-      #ffffff 80%, 
+      rgba(99, 102, 241, 0.6) 50%, 
       transparent 100%
     );
     opacity: 0.8;
@@ -219,10 +260,11 @@ const StyledCard = styled(Card)`
   
   &:hover {
     transform: translateY(-2px);
-    border-color: #555555;
+    border-color: rgba(99, 102, 241, 0.3);
     box-shadow: 
       0 25px 50px rgba(0, 0, 0, 0.6),
       0 12px 24px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(99, 102, 241, 0.2),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 `;
@@ -232,15 +274,19 @@ const SecurityBadge = styled(motion.div)`
   align-items: center;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
-  border: 1px solid #444444;
+  background: linear-gradient(135deg, 
+    rgba(16, 185, 129, 0.1) 0%, 
+    rgba(34, 197, 94, 0.05) 100%
+  );
+  border: 1px solid rgba(16, 185, 129, 0.2);
   border-radius: ${theme.borderRadius.lg};
-  margin-bottom: 2rem;
-  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
   color: #ffffff;
+  font-size: 0.875rem;
   font-weight: 500;
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(10px);
   
   &::before {
     content: '';
@@ -251,7 +297,7 @@ const SecurityBadge = styled(motion.div)`
     height: 100%;
     background: linear-gradient(90deg, 
       transparent 0%, 
-      rgba(255, 255, 255, 0.1) 50%, 
+      rgba(16, 185, 129, 0.2) 50%, 
       transparent 100%
     );
     transition: left 0.5s ease;
@@ -264,8 +310,13 @@ const SecurityBadge = styled(motion.div)`
   svg {
     width: 20px;
     height: 20px;
-    color: #ffffff;
-    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+    color: #10b981;
+    filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.4));
+    
+    &:last-child {
+      color: #f59e0b;
+      filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.4));
+    }
   }
 `;
 
