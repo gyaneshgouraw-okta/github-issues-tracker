@@ -12,14 +12,15 @@
   "dependencies": {
     "@octokit/rest": "^22.0.0",
     "axios": "^1.10.0",
+    "framer-motion": "^12.23.12",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.4",
+    "lucide-react": "^0.442.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.2",
     "styled-components": "^6.1.19",
-    "zustand": "^5.0.5",
-    "lucide-react": "^0.442.0"
+    "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
