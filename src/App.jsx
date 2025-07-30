@@ -8,6 +8,7 @@ import Home from './views/pages/Home';
 import IssuesList from './views/pages/IssuesList';
 import Settings from './views/pages/Settings';
 import Auth0Repos from './views/pages/Auth0Repos';
+import About from './views/pages/About';
 import './App.css';
 
 function App() {
@@ -50,6 +51,14 @@ function App() {
                 element={
                   <RequireAuth>
                     <Auth0Repos />
+                  </RequireAuth>
+                } 
+              />
+              <Route 
+                path="/about" 
+                element={
+                  <RequireAuth>
+                    <About />
                   </RequireAuth>
                 } 
               />

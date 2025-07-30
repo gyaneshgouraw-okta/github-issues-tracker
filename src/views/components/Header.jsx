@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AuthContext } from '../../context/AuthContext';
 import { Github, Menu, LogOut, User } from 'lucide-react';
@@ -219,6 +220,7 @@ const LogoutButton = styled.button`
  */
 function Header({ toggleSidebar }) {
   const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
   
   return (
     <HeaderContainer>
@@ -235,7 +237,7 @@ function Header({ toggleSidebar }) {
       
       {user && (
         <UserSection>
-          <UserCard>
+          <UserCard onClick={() => navigate('/about')}>
             {user.avatar_url ? (
               <Avatar src={user.avatar_url} alt={user.login} />
             ) : (

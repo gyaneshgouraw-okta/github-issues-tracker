@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { RepositoryContext } from '../../context/RepositoryContext';
-import { Search, Home, Settings, BookOpen, Star, GitBranch, Clock } from 'lucide-react';
+import { Search, Home, Settings, BookOpen, Star, GitBranch, Clock, Info } from 'lucide-react';
 
 const SidebarContainer = styled.aside`
   position: fixed;
@@ -352,6 +352,12 @@ function Sidebar({ isOpen }) {
             <NavLink active={location.pathname.includes('/auth0-repos')}>
               <BookOpen />
               Auth0 Repos
+            </NavLink>
+          </NavItem>
+          <NavItem active={location.pathname.includes('/about')} onClick={() => navigate('/about')}>
+            <NavLink active={location.pathname.includes('/about')}>
+              <Info />
+              About
             </NavLink>
           </NavItem>
         </NavList>
