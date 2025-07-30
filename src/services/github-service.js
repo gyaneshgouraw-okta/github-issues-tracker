@@ -34,6 +34,53 @@ class GitHubService {
   }
 
   /**
+   * Get token information including scopes and rate limit
+   * @returns {Promise<Object>} - Token information
+   */
+  async getTokenInfo() {
+    try {
+      // Make a request to get rate limit info which includes token scopes
+      const response = await this.octokit.request('GET /rate_limit');
+      
+      // Get token scopes from headers (if available)
+      const scopes = response.headers['x-oauth-scopes'] ? 
+        response.headers['x-oauth-scopes'].split(', ').filter(s => s.trim()) : [];
+      
+      // Get rate limit information
+      const rateLimit = response.data.rate;
+      
+      // Calculate token age (GitHub tokens don't expose creation date directly)
+      // We'll use a different approach - check if we can get app info
+      let tokenType = 'personal_access_token';
+      let expiresAt = null;
+      
+      try {
+        // Try to get app info - this will work for OAuth apps but not PATs
+        await this.octokit.request('GET /applications/{client_id}/grant', {
+          client_id: 'dummy'
+        });
+      } catch (error) {
+        // Expected for PATs - this is fine
+      }
+      
+      return {
+        type: tokenType,
+        scopes,
+        rateLimit: {
+          limit: rateLimit.limit,
+          remaining: rateLimit.remaining,
+          reset: new Date(rateLimit.reset * 1000),
+          used: rateLimit.used
+        },
+        expiresAt, // Will be null for most tokens as GitHub doesn't expose this
+        lastChecked: new Date()
+      };
+    } catch (error) {
+      throw new Error('Failed to get token information');
+    }
+  }
+
+  /**
    * Get repositories for the authenticated user
    * @returns {Promise<Array>} - List of repositories
    */
