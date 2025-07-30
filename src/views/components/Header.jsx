@@ -61,7 +61,6 @@ const Logo = styled.div`
   padding: 0.5rem 0;
   
   &:hover {
-    transform: translateY(-1px);
     filter: brightness(1.1);
   }
   
@@ -88,12 +87,6 @@ const MenuButton = styled.button`
   &:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.25);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.2);
-  }
-  
-  &:active {
-    transform: translateY(0);
   }
   
   svg {
@@ -123,8 +116,6 @@ const UserCard = styled.div`
   &:hover {
     background: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.2);
   }
 `;
 
@@ -137,7 +128,6 @@ const Avatar = styled.img`
   
   &:hover {
     border-color: rgba(255, 255, 255, 0.4);
-    transform: scale(1.05);
   }
 `;
 
@@ -157,7 +147,6 @@ const AvatarFallback = styled.div`
   
   &:hover {
     border-color: rgba(255, 255, 255, 0.4);
-    transform: scale(1.05);
   }
 `;
 
@@ -199,12 +188,6 @@ const LogoutButton = styled.button`
     background: rgba(239, 68, 68, 0.25);
     border-color: rgba(239, 68, 68, 0.4);
     color: #fecaca;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px -2px rgba(239, 68, 68, 0.3);
-  }
-  
-  &:active {
-    transform: translateY(0);
   }
   
   svg {

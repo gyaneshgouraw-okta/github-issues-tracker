@@ -94,7 +94,6 @@ const RepoCard = styled.li`
   backdrop-filter: blur(8px);
   
   &:hover {
-    transform: translateY(-1px);
     background: ${props => props.active 
       ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(59, 130, 246, 0.08) 100%)'
       : 'rgba(255, 255, 255, 0.7)'
@@ -103,13 +102,6 @@ const RepoCard = styled.li`
       ? 'rgba(99, 102, 241, 0.3)' 
       : 'rgba(99, 102, 241, 0.2)'
     };
-    box-shadow: 
-      0 4px 12px -2px rgba(0, 0, 0, 0.08),
-      0 2px 6px -1px rgba(0, 0, 0, 0.04);
-  }
-  
-  &:active {
-    transform: translateY(0);
   }
 `;
 
@@ -187,21 +179,6 @@ const NavList = styled.ul`
 
 const NavItem = styled.li`
   margin: 0 1rem;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-  background: ${props => props.active 
-    ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(59, 130, 246, 0.08) 100%)'
-    : 'transparent'
-  };
-  
-  &:hover {
-    background: ${props => props.active 
-      ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(59, 130, 246, 0.12) 100%)'
-      : 'rgba(255, 255, 255, 0.5)'
-    };
-    transform: translateX(2px);
-  }
 `;
 
 const NavLink = styled.div`
@@ -213,6 +190,19 @@ const NavLink = styled.div`
   font-weight: ${props => props.active ? '600' : '500'};
   gap: 0.75rem;
   border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  background: ${props => props.active 
+    ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(59, 130, 246, 0.08) 100%)'
+    : 'transparent'
+  };
+  
+  &:hover {
+    background: ${props => props.active 
+      ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(59, 130, 246, 0.25) 100%)'
+      : 'rgba(99, 102, 241, 0.2)'
+    } !important;
+  }
   
   svg {
     width: 18px;
@@ -334,28 +324,26 @@ function Sidebar({ isOpen }) {
     <SidebarContainer isOpen={isOpen}>
       <NavMenu>
         <NavList>
-          <NavItem active={location.pathname === '/'} onClick={() => navigate('/')}>
-            <NavLink active={location.pathname === '/'}>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path fillRule="evenodd" d="M8.156 1.835a.25.25 0 00-.312 0l-5.25 4.2a.25.25 0 00-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 01.75-.75h3.5a.75.75 0 01.75.75v5.25h2.75a.25.25 0 00.25-.25V6.23a.25.25 0 00-.094-.195l-5.25-4.2zM6.906.664a1.75 1.75 0 012.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0113.25 15h-3.5a.75.75 0 01-.75-.75V8.25H7v6a.75.75 0 01-.75.75h-3.5A1.75 1.75 0 011 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2z"></path>
-              </svg>
+          <NavItem>
+            <NavLink active={location.pathname === '/'} onClick={() => navigate('/')}>
+              <Home />
               Home
             </NavLink>
           </NavItem>
-          <NavItem active={location.pathname.includes('/settings')} onClick={() => navigate('/settings')}>
-            <NavLink active={location.pathname.includes('/settings')}>
+          <NavItem>
+            <NavLink active={location.pathname.includes('/settings')} onClick={() => navigate('/settings')}>
               <Settings />
               Settings
             </NavLink>
           </NavItem>
-          <NavItem active={location.pathname.includes('/auth0-repos')} onClick={() => navigate('/auth0-repos')}>
-            <NavLink active={location.pathname.includes('/auth0-repos')}>
+          <NavItem>
+            <NavLink active={location.pathname.includes('/auth0-repos')} onClick={() => navigate('/auth0-repos')}>
               <BookOpen />
               Auth0 Repos
             </NavLink>
           </NavItem>
-          <NavItem active={location.pathname.includes('/about')} onClick={() => navigate('/about')}>
-            <NavLink active={location.pathname.includes('/about')}>
+          <NavItem>
+            <NavLink active={location.pathname.includes('/about')} onClick={() => navigate('/about')}>
               <Info />
               About
             </NavLink>
