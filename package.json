@@ -12,6 +12,8 @@
   "dependencies": {
     "@octokit/rest": "^22.0.0",
     "axios": "^1.10.0",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.2",
