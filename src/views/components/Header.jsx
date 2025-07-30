@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import styled from 'styled-components';
 import { AuthContext } from '../../context/AuthContext';
+import { Github, Menu, LogOut, User } from 'lucide-react';
 
 const HeaderContainer = styled.header`
   position: fixed;
@@ -8,84 +9,206 @@ const HeaderContainer = styled.header`
   left: 0;
   right: 0;
   z-index: 1000;
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  background: linear-gradient(135deg, 
+    rgba(30, 41, 59, 0.95) 0%, 
+    rgba(51, 65, 85, 0.9) 50%,
+    rgba(71, 85, 105, 0.85) 100%
+  );
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   color: white;
-  padding: 0.75rem 1.5rem;
+  padding: 0 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-shadow: 
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    0 8px 32px -8px rgba(0, 0, 0, 0.3),
+    0 4px 16px -4px rgba(0, 0, 0, 0.2);
   height: 60px;
   box-sizing: border-box;
-  margin: 0;
-  border: none;
-  width: 100%;
-  backdrop-filter: blur(8px);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.2) 50%, 
+      transparent 100%
+    );
+  }
+`;
+
+const LeftSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 `;
 
 const Logo = styled.div`
-  font-size: 1.25rem;
-  font-weight: bold;
+  font-size: 1.125rem;
+  font-weight: 700;
   display: flex;
   align-items: center;
-
+  gap: 0.75rem;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  cursor: pointer;
+  padding: 0.5rem 0;
+  
+  &:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.1);
+  }
+  
   svg {
-    margin-right: 0.75rem;
+    width: 24px;
+    height: 24px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   }
 `;
 
 const MenuButton = styled.button`
-  background: none;
-  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
   color: white;
   cursor: pointer;
-  margin-right: 1rem;
-  padding: 0.25rem;
+  padding: 0.75rem;
   display: flex;
   align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  backdrop-filter: blur(8px);
   
   &:hover {
-    color: #ccc;
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.2);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  svg {
+    width: 18px;
+    height: 18px;
   }
 `;
 
 const UserSection = styled.div`
   display: flex;
   align-items: center;
+  gap: 1rem;
+`;
+
+const UserCard = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.2);
+  }
+`;
+
+const Avatar = styled.img`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+  }
+`;
+
+const AvatarFallback = styled.div`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+  }
 `;
 
 const UserInfo = styled.div`
   display: flex;
-  align-items: center;
-  margin-right: 1rem;
-`;
-
-const Avatar = styled.img`
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  margin-right: 0.5rem;
+  flex-direction: column;
+  align-items: flex-start;
 `;
 
 const Username = styled.span`
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 0.875rem;
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.95);
+`;
+
+const UserRole = styled.span`
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 400;
 `;
 
 const LogoutButton = styled.button`
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 8px;
-  color: white;
-  padding: 0.5rem 1rem;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 10px;
+  color: #fca5a5;
+  padding: 0.75rem 1rem;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
   font-weight: 500;
-  backdrop-filter: blur(4px);
+  font-size: 0.875rem;
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   
   &:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background: rgba(239, 68, 68, 0.25);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #fecaca;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px -2px rgba(239, 68, 68, 0.3);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  svg {
+    width: 16px;
+    height: 16px;
   }
 `;
 
@@ -99,32 +222,34 @@ function Header({ toggleSidebar }) {
   
   return (
     <HeaderContainer>
-      <Logo>
-        {/* GitHub icon */}
-        <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor">
-          <path fillRule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
-        </svg>
-        GitHub Issue Tracker
-      </Logo>
-      
-      <div style={{ display: 'flex' }}>
+      <LeftSection>
         <MenuButton onClick={toggleSidebar}>
-          {/* Hamburger icon */}
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
+          <Menu />
         </MenuButton>
-      </div>
+        
+        <Logo>
+          <Github />
+          GitHub Issue Tracker
+        </Logo>
+      </LeftSection>
       
       {user && (
         <UserSection>
-          <UserInfo>
-            <Avatar src={user.avatar_url} alt={user.login} />
-            <Username>{user.login}</Username>
-          </UserInfo>
+          <UserCard>
+            {user.avatar_url ? (
+              <Avatar src={user.avatar_url} alt={user.login} />
+            ) : (
+              <AvatarFallback>
+                <User size={16} />
+              </AvatarFallback>
+            )}
+            <UserInfo>
+              <Username>{user.login}</Username>
+              <UserRole>Developer</UserRole>
+            </UserInfo>
+          </UserCard>
           <LogoutButton onClick={logout}>
+            <LogOut />
             Logout
           </LogoutButton>
         </UserSection>
