@@ -132,32 +132,125 @@ The application includes a dedicated view for browsing Auth0 organization reposi
 
 ## 🏢 Application Structure
 
-The application follows the MVVM (Model-View-ViewModel) architecture pattern:
+The application follows the MVVM (Model-View-ViewModel) architecture pattern with React Context for state management:
 
-### Models
+```mermaid
+graph TB
+    subgraph "🎨 Views Layer"
+        A[App.jsx] --> B[Home Page]
+        A --> C[Issues List Page]
+        A --> D[Auth0 Repos Page]
+        A --> E[Settings Page]
+        A --> F[Login Page]
+        
+        B --> G[Sidebar Component]
+        C --> H[Issue Card Component]
+        D --> I[Repository Table]
+        D --> J[PDF Export Button]
+        
+        G --> K[Navigation Links]
+        H --> L[Comment Display]
+        I --> M[License Badge]
+    end
+    
+    subgraph "🧠 Context Providers (ViewModels)"
+        N[Auth Context]
+        O[Repository Context]
+        P[Issue Context]
+    end
+    
+    subgraph "🔧 Services Layer"
+        Q[GitHub Service]
+        R[Storage Service]
+        S[PDF Service]
+    end
+    
+    subgraph "📊 Models Layer"
+        T[User Model]
+        U[Repository Model]
+        V[Issue Model]
+        W[Comment Model]
+    end
+    
+    subgraph "🌐 External APIs"
+        X[GitHub REST API]
+        Y[Browser Storage]
+    end
+    
+    %% Connections
+    A -.-> N
+    A -.-> O
+    A -.-> P
+    
+    N --> Q
+    O --> Q
+    P --> Q
+    
+    Q --> X
+    R --> Y
+    
+    Q -.-> T
+    Q -.-> U
+    Q -.-> V
+    Q -.-> W
+    
+    D --> S
+    S -.-> I
+    
+    %% Styling
+    classDef viewLayer fill:#e1f5fe
+    classDef contextLayer fill:#f3e5f5
+    classDef serviceLayer fill:#e8f5e8
+    classDef modelLayer fill:#fff3e0
+    classDef externalLayer fill:#ffebee
+    
+    class A,B,C,D,E,F,G,H,I,J,K,L,M viewLayer
+    class N,O,P contextLayer
+    class Q,R,S serviceLayer
+    class T,U,V,W modelLayer
+    class X,Y externalLayer
+```
 
-- Located in `/src/models/`
-- Define data structures and types for GitHub entities
-- Handle data validation and transformation
+### 📁 Directory Structure
 
-### Views
+```
+src/
+├── 🎨 views/
+│   ├── pages/          # Main application pages
+│   │   ├── Home.jsx
+│   │   ├── IssuesList.jsx
+│   │   ├── Auth0Repos.jsx
+│   │   ├── Settings.jsx
+│   │   └── Login.jsx
+│   └── components/     # Reusable UI components
+│       ├── Sidebar.jsx
+│       ├── IssueCard.jsx
+│       └── Common/
+├── 🧠 contexts/        # React Context Providers (ViewModels)
+│   ├── AuthContext.jsx
+│   ├── RepositoryContext.jsx
+│   └── IssueContext.jsx
+├── 🔧 services/        # External API integrations
+│   ├── github-service.js
+│   ├── storage-service.js
+│   └── pdf-service.js
+├── 📊 models/          # Data structures and validation
+│   ├── User.js
+│   ├── Repository.js
+│   ├── Issue.js
+│   └── Comment.js
+└── 🎯 utils/          # Helper functions
+    ├── constants.js
+    └── helpers.js
+```
 
-- Located in `/src/views/`
-- React components that render the UI
-- Separated into pages and reusable components
+### 🔄 Data Flow
 
-### ViewModels
-
-- Located in `/src/viewmodels/`
-- Connect models to views
-- Manage application state and business logic
-- Handle data processing and transformation
-
-### Services
-
-- Located in `/src/services/`
-- Encapsulate API calls and external integrations
-- Manage GitHub API communication
+1. **Views** trigger actions through user interactions
+2. **Context Providers** manage state and coordinate between components
+3. **Services** handle external API calls and data processing
+4. **Models** define data structure and validation rules
+5. **External APIs** provide data sources (GitHub API, Browser Storage)
 
 ## 🔗 API Integration
 
