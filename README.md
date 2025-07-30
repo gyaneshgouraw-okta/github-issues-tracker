@@ -2,6 +2,12 @@
 
 A modern React application that helps you track GitHub issues that have received comments after they were closed. Built with React, this tool follows the MVVM (Model-View-ViewModel) architecture pattern to maintain a clean separation of concerns.
 
+## 🚀 Live Application
+
+> **[🌐 View Live Application](https://github-issues-tracker-one.vercel.app/)**
+> 
+> Experience the GitHub Issues Tracker in action! Click the link above to access the deployed application.
+
 ## Features
 
 - 🔒 **Secure Authentication**: Authenticate with your GitHub personal access token
