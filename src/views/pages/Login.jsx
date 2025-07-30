@@ -1,7 +1,10 @@
 import { useState, useContext, useActionState, startTransition, useEffect } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+import { motion } from 'framer-motion';
+import { Github, Shield, Sparkles } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
+import theme from '../../styles/theme';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Card from '../components/Card';
@@ -12,50 +15,177 @@ const LoginContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: 2rem;
-  background-color: #f6f8fa;
+  height: 100vh;
+  width: 100vw;
+  padding: 1rem;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #0d0d0d 50%, #262626 75%, #000000 100%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
 `;
 
-const LoginForm = styled.form`
+const LoginForm = styled(motion.form)`
   width: 100%;
   max-width: 480px;
+  max-height: 90vh;
+  position: relative;
+  z-index: 1;
+  overflow-y: auto;
 `;
 
-const LogoContainer = styled.div`
+const LogoContainer = styled(motion.div)`
   display: flex;
   justify-content: center;
   margin-bottom: 2rem;
-`;
-
-const Logo = styled.div`
-  color: #24292e;
-  font-size: 1.5rem;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
   
-  svg {
-    margin-right: 0.75rem;
+  @media (max-height: 600px) {
+    margin-bottom: 1rem;
   }
 `;
 
-const FormGroup = styled.div`
+const Logo = styled.div`
+  color: #ffffff;
+  font-size: 2.5rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  font-family: ${theme.typography.fontFamily.sans.join(', ')};
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  
+  svg {
+    margin-right: 1rem;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+  }
+`;
+
+const FormGroup = styled(motion.div)`
   margin-bottom: 1.5rem;
+  
+  @media (max-height: 600px) {
+    margin-bottom: 1rem;
+  }
 `;
 
 const HelpText = styled.p`
   font-size: 0.875rem;
-  color: #586069;
-  margin-top: 0.5rem;
+  color: #b3b3b3;
+  margin-top: 1rem;
+  line-height: 1.6;
+  font-family: ${theme.typography.fontFamily.sans.join(', ')};
+  
+  strong {
+    color: #ffffff;
+    font-weight: 600;
+  }
 `;
 
 const LinkText = styled.a`
-  color: #0366d6;
+  color: #ffffff;
   text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: #ffffff;
+    transition: width 0.3s ease;
+  }
   
   &:hover {
-    text-decoration: underline;
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    
+    &::after {
+      width: 100%;
+    }
+  }
+`;
+
+const StyledCard = styled(Card)`
+  background: linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 100%);
+  border: 1px solid #333333;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.5),
+    0 8px 16px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  border-radius: ${theme.borderRadius.xl};
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s ease;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      #ffffff 20%, 
+      #ffffff 80%, 
+      transparent 100%
+    );
+    opacity: 0.8;
+  }
+  
+  &:hover {
+    transform: translateY(-2px);
+    border-color: #555555;
+    box-shadow: 
+      0 25px 50px rgba(0, 0, 0, 0.6),
+      0 12px 24px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+`;
+
+const SecurityBadge = styled(motion.div)`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  border: 1px solid #444444;
+  border-radius: ${theme.borderRadius.lg};
+  margin-bottom: 2rem;
+  font-size: 0.875rem;
+  color: #ffffff;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.1) 50%, 
+      transparent 100%
+    );
+    transition: left 0.5s ease;
+  }
+  
+  &:hover::before {
+    left: 100%;
+  }
+  
+  svg {
+    width: 20px;
+    height: 20px;
+    color: #ffffff;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
   }
 `;
 
@@ -126,71 +256,155 @@ function Login() {
     return <Navigate to="/" replace />;
   }
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const cardVariants = {
+    hidden: { y: 30, opacity: 0, scale: 0.95 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    }
+  };
+
   return (
     <LoginContainer>
-      <LoginForm action={authAction}>
-        <LogoContainer>
+      <LoginForm 
+        action={authAction}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <LogoContainer variants={itemVariants}>
           <Logo>
-            <svg width="32" height="32" viewBox="0 0 16 16" fill="currentColor">
-              <path fillRule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
-            </svg>
+            <Github size={32} />
             GitHub Issue Tracker
           </Logo>
         </LogoContainer>
         
-        <Card>
-          <Card.Body>
-            {error && (
-              <Alert 
-                variant="error" 
-                title="Authentication failed"
-                message={error}
-                dismissible
-                onDismiss={clearError}
-              />
-            )}
-            
-            <FormGroup>
-              <Input
-                id="token"
-                name="token"
-                label="GitHub Personal Access Token"
-                type="password"
-                placeholder="Enter your GitHub token"
-                value={token}
-                onChange={(e) => setToken(e.target.value)}
-                required
-              />
-              <HelpText>
-                You need a GitHub token with <strong>repo</strong> scope to access private repositories.{' '}
-                <LinkText 
-                  href="https://github.com/settings/tokens/new?scopes=repo&description=GitHub%20Issue%20Tracker" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
+        <motion.div variants={cardVariants}>
+          <StyledCard>
+            <Card.Body>
+              <SecurityBadge 
+                variants={itemVariants}
+                whileHover={{ scale: 1.02 }}
+              >
+                <Shield size={16} />
+                <span>Your token is encrypted and stored securely</span>
+                <Sparkles size={14} />
+              </SecurityBadge>
+
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  Create a new token
-                </LinkText>
-              </HelpText>
-            </FormGroup>
-            
-            {/* React 19: Show action state error */}
-            {authState.error && (
-              <Alert 
-                variant="error" 
-                title="Validation Error"
-                message={authState.error}
-              />
-            )}
-            
-            <Button 
-              type="submit" 
-              fullWidth
-              disabled={isPending || !token.trim()}
-            >
-              {isPending ? 'Signing in...' : 'Sign in with GitHub Token'}
-            </Button>
-          </Card.Body>
-        </Card>
+                  <Alert 
+                    variant="error" 
+                    title="Authentication failed"
+                    message={error}
+                    dismissible
+                    onDismiss={clearError}
+                  />
+                </motion.div>
+              )}
+              
+              <FormGroup variants={itemVariants}>
+                <Input
+                  id="token"
+                  name="token"
+                  label="GitHub Personal Access Token"
+                  type="password"
+                  placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                  value={token}
+                  onChange={(e) => setToken(e.target.value)}
+                  required
+                  autoFocus
+                />
+                <HelpText>
+                  You need a GitHub token with <strong>repo</strong> scope to access private repositories.{' '}
+                  <LinkText 
+                    href="https://github.com/settings/tokens/new?scopes=repo&description=GitHub%20Issue%20Tracker" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    Create a new token
+                  </LinkText>
+                </HelpText>
+              </FormGroup>
+              
+              {/* React 19: Show action state error */}
+              {authState.error && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Alert 
+                    variant="error" 
+                    title="Validation Error"
+                    message={authState.error}
+                  />
+                </motion.div>
+              )}
+              
+              <motion.div
+                variants={itemVariants}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button 
+                  type="submit" 
+                  variant="primary"
+                  fullWidth
+                  disabled={isPending || !token.trim()}
+                >
+                  {isPending ? (
+                    <>
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        style={{ display: 'inline-block', marginRight: '0.5rem' }}
+                      >
+                        ⟳
+                      </motion.div>
+                      Signing in...
+                    </>
+                  ) : (
+                    'Sign in with GitHub Token'
+                  )}
+                </Button>
+              </motion.div>
+            </Card.Body>
+          </StyledCard>
+        </motion.div>
       </LoginForm>
     </LoginContainer>
   );

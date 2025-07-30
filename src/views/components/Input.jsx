@@ -9,46 +9,55 @@ const InputContainer = styled.div`
 
 const StyledLabel = styled.label`
   font-size: 0.875rem;
-  font-weight: 500;
-  margin-bottom: 0.25rem;
-  color: #24292e;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+  letter-spacing: 0.02em;
 `;
 
 const StyledInput = styled.input`
-  padding: 0.5rem 0.75rem;
-  border: 1px solid ${props => props.error ? '#d73a49' : '#e1e4e8'};
-  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  border: 1px solid ${props => props.error ? '#ef4444' : '#444444'};
+  border-radius: 8px;
   font-size: 0.875rem;
   line-height: 1.5;
-  color: #24292e;
-  background-color: ${props => props.disabled ? '#f6f8fa' : '#fff'};
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  color: #ffffff;
+  background-color: ${props => props.disabled ? '#1a1a1a' : '#2a2a2a'};
+  transition: all 0.2s ease;
   
   &:focus {
     outline: none;
-    border-color: #0366d6;
-    box-shadow: 0 0 0 3px rgba(3, 102, 214, 0.3);
+    border-color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+    background-color: #333333;
+  }
+  
+  &:hover {
+    border-color: #666666;
+    background-color: #333333;
   }
   
   &::placeholder {
-    color: #6a737d;
+    color: #999999;
   }
   
   &:disabled {
     cursor: not-allowed;
+    opacity: 0.5;
   }
 `;
 
 const ErrorMessage = styled.div`
   font-size: 0.75rem;
-  color: #d73a49;
-  margin-top: 0.25rem;
+  color: #ef4444;
+  margin-top: 0.5rem;
+  font-weight: 500;
 `;
 
 const HelperText = styled.div`
   font-size: 0.75rem;
-  color: #6a737d;
-  margin-top: 0.25rem;
+  color: #cccccc;
+  margin-top: 0.5rem;
 `;
 
 /**
