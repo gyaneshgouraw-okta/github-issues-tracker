@@ -8,18 +8,21 @@ const HeaderContainer = styled.header`
   left: 0;
   right: 0;
   z-index: 1000;
-  background-color: #24292e;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
   color: white;
   padding: 0.75rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   height: 60px;
   box-sizing: border-box;
   margin: 0;
   border: none;
   width: 100%;
+  backdrop-filter: blur(8px);
 `;
 
 const Logo = styled.div`
@@ -73,11 +76,13 @@ const Username = styled.span`
 const LogoutButton = styled.button`
   background: rgba(255, 255, 255, 0.1);
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   color: white;
-  padding: 0.25rem 0.75rem;
+  padding: 0.5rem 1rem;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+  backdrop-filter: blur(4px);
   
   &:hover {
     background-color: rgba(255, 255, 255, 0.2);

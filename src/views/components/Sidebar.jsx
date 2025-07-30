@@ -5,19 +5,23 @@ import { RepositoryContext } from '../../context/RepositoryContext';
 
 const SidebarContainer = styled.aside`
   position: fixed;
-  left: ${props => props.isOpen ? '0' : '-250px'};
+  left: ${props => props.isOpen ? '0' : '-280px'};
   top: 60px; /* Exactly below header */
-  width: 250px;
+  width: 280px;
   height: calc(100vh - 60px);
-  background-color: #f6f8fa;
-  border-right: 1px solid #e1e4e8;
-  transition: left 0.3s ease;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+  backdrop-filter: blur(12px);
+  border-right: 1px solid rgba(226, 232, 240, 0.8);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 999;
   overflow-y: auto;
   padding-bottom: 2rem;
   box-sizing: border-box;
   margin: 0;
-  padding-top: 0;
+  padding-top: 1rem;
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.03);
 `;
 
 const SectionTitle = styled.h3`
@@ -36,8 +40,11 @@ const RepoList = styled.ul`
 `;
 
 const RepoItem = styled.li`
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
   cursor: pointer;
+  border-radius: 8px;
+  margin: 0 0.75rem 0.25rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   border-left: 3px solid ${props => props.active ? '#0366d6' : 'transparent'};
   background-color: ${props => props.active ? 'rgba(3, 102, 214, 0.05)' : 'transparent'};
   transition: background-color 0.2s;
