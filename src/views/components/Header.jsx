@@ -18,14 +18,14 @@ const HeaderContainer = styled.header`
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   color: white;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-shadow: 
     0 8px 32px -8px rgba(0, 0, 0, 0.3),
     0 4px 16px -4px rgba(0, 0, 0, 0.2);
-  height: 60px;
+  height: 48px;
   box-sizing: border-box;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
   
@@ -51,22 +51,22 @@ const LeftSection = styled.div`
 `;
 
 const Logo = styled.div`
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
   cursor: pointer;
-  padding: 0.5rem 0;
+  padding: 0.25rem 0;
   
   &:hover {
     filter: brightness(1.1);
   }
   
   svg {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   }
 `;
@@ -74,10 +74,10 @@ const Logo = styled.div`
 const MenuButton = styled.button`
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
+  border-radius: 8px;
   color: white;
   cursor: pointer;
-  padding: 0.75rem;
+  padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -90,8 +90,8 @@ const MenuButton = styled.button`
   }
   
   svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
   }
 `;
 
@@ -104,11 +104,11 @@ const UserSection = styled.div`
 const UserCard = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
-  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  padding: 0.375rem 0.75rem;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
   backdrop-filter: blur(8px);
   cursor: pointer;
@@ -120,10 +120,10 @@ const UserCard = styled.div`
 `;
 
 const Avatar = styled.img`
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
   
   &:hover {
@@ -132,8 +132,8 @@ const Avatar = styled.img`
 `;
 
 const AvatarFallback = styled.div`
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
   display: flex;
@@ -141,8 +141,8 @@ const AvatarFallback = styled.div`
   justify-content: center;
   color: white;
   font-weight: 600;
-  font-size: 0.875rem;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.75rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
   
   &:hover {
@@ -158,7 +158,7 @@ const UserInfo = styled.div`
 
 const Username = styled.span`
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   line-height: 1.2;
   color: rgba(255, 255, 255, 0.95);
 `;
@@ -172,17 +172,17 @@ const UserRole = styled.span`
 const LogoutButton = styled.button`
   background: rgba(239, 68, 68, 0.15);
   border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 10px;
+  border-radius: 8px;
   color: #fca5a5;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 0.75rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
   font-weight: 500;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.375rem;
   
   &:hover {
     background: rgba(239, 68, 68, 0.25);
@@ -191,8 +191,8 @@ const LogoutButton = styled.button`
   }
   
   svg {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
   }
 `;
 

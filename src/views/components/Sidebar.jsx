@@ -7,9 +7,9 @@ import { Search, Home, Settings, BookOpen, Star, GitBranch, Clock, Info } from '
 const SidebarContainer = styled.aside`
   position: fixed;
   left: ${props => props.isOpen ? '0' : '-280px'};
-  top: 60px;
+  top: 48px;
   width: 300px;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 48px);
   background: linear-gradient(180deg, 
     rgba(255, 255, 255, 0.98) 0%, 
     rgba(248, 250, 252, 0.95) 100%
@@ -46,16 +46,16 @@ const SidebarContainer = styled.aside`
 `;
 
 const SectionTitle = styled.h3`
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin: 2rem 0 1rem;
+  margin: 1.5rem 0 0.75rem;
   padding: 0 1.5rem;
   color: #64748b;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.375rem;
   
   &:first-child {
     margin-top: 0;
@@ -80,48 +80,50 @@ const RepoList = styled.ul`
 
 const RepoCard = styled.li`
   margin: 0 1rem;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
   background: ${props => props.active 
     ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(59, 130, 246, 0.05) 100%)'
-    : 'rgba(255, 255, 255, 0.4)'
+    : 'rgba(255, 255, 255, 0.5)'
   };
   border: 1px solid ${props => props.active 
-    ? 'rgba(99, 102, 241, 0.2)' 
-    : 'rgba(226, 232, 240, 0.5)'
+    ? 'rgba(99, 102, 241, 0.25)' 
+    : 'rgba(226, 232, 240, 0.6)'
   };
   backdrop-filter: blur(8px);
   
   &:hover {
     background: ${props => props.active 
       ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(59, 130, 246, 0.08) 100%)'
-      : 'rgba(255, 255, 255, 0.7)'
+      : 'rgba(255, 255, 255, 0.8)'
     };
     border-color: ${props => props.active 
-      ? 'rgba(99, 102, 241, 0.3)' 
-      : 'rgba(99, 102, 241, 0.2)'
+      ? 'rgba(99, 102, 241, 0.35)' 
+      : 'rgba(99, 102, 241, 0.25)'
     };
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.1);
   }
 `;
 
 const RepoCardContent = styled.div`
-  padding: 1rem;
+  padding: 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.375rem;
 `;
 
 const RepoHeader = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
 `;
 
 const RepoIcon = styled.div`
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
   background: ${props => props.active 
     ? 'linear-gradient(135deg, #6366f1 0%, #3b82f6 100%)'
     : 'linear-gradient(135deg, #64748b 0%, #475569 100%)'
@@ -130,8 +132,10 @@ const RepoIcon = styled.div`
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 14px;
+  font-size: 0.75rem;
+  font-weight: 600;
   flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const RepoInfo = styled.div`
@@ -140,28 +144,32 @@ const RepoInfo = styled.div`
 `;
 
 const RepoName = styled.div`
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: ${props => props.active ? '#6366f1' : '#1e293b'};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.2;
+  line-height: 1.3;
+  margin-bottom: 0.125rem;
 `;
 
 const RepoMeta = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-top: 0.25rem;
-  font-size: 0.75rem;
+  gap: 0.5rem;
+  font-size: 0.6875rem;
   color: #64748b;
 `;
 
 const MetaItem = styled.span`
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.1875rem;
+  
+  svg {
+    opacity: 0.7;
+  }
 `;
 
 const NavMenu = styled.nav`
@@ -184,11 +192,11 @@ const NavItem = styled.li`
 const NavLink = styled.div`
   display: flex;
   align-items: center;
-  padding: 0.875rem 1rem;
+  padding: 0.75rem 1rem;
   color: ${props => props.active ? '#6366f1' : '#475569'};
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: ${props => props.active ? '600' : '500'};
-  gap: 0.75rem;
+  gap: 0.5rem;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
@@ -218,10 +226,10 @@ const SearchContainer = styled.div`
 
 const SearchInput = styled.input`
   width: 100%;
-  padding: 0.875rem 1rem 0.875rem 2.75rem;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
   border: 1px solid rgba(226, 232, 240, 0.6);
-  border-radius: 12px;
-  font-size: 0.875rem;
+  border-radius: 10px;
+  font-size: 0.8125rem;
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(8px);
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
