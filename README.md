@@ -8,26 +8,30 @@ A modern React application that helps you track GitHub issues that have received
 > 
 > Experience the GitHub Issues Tracker in action! Click the link above to access the deployed application.
 
-## Features
+## ✨ Features
 
 - 🔒 **Secure Authentication**: Authenticate with your GitHub personal access token
 - 🔍 **Repository Selection**: Choose from your accessible repositories
 - 📊 **Issue Tracking**: Find closed issues that have received comments after closure
+- 🏢 **Auth0 Organization View**: Browse all Auth0 repositories with license information in a tabular format
+- 📄 **PDF Export**: Download repository data as professionally formatted PDF reports
 - 🔄 **Filtering & Sorting**: Filter issues by minimum comment count, closure date, and more
 - 💾 **Data Persistence**: Save your preferences and settings between sessions
+- 📈 **Statistics Dashboard**: View comprehensive stats for organization repositories
 
-## Table of Contents
+## 📝 Table of Contents
 
-- [Installation](#installation)
-- [Usage](#usage)
-- [Requirements](#requirements)
-- [Application Structure](#application-structure)
-- [API Integration](#api-integration)
-- [Authentication](#authentication)
-- [Contributing](#contributing)
-- [License](#license)
+- [🛠️ Installation](#installation)
+- [🚀 Usage](#usage)
+  - [🏢 Auth0 Organization Repositories](#auth0-organization-repositories)
+- [📎 Requirements](#requirements)
+- [🏢 Application Structure](#application-structure)
+- [🔗 API Integration](#api-integration)
+- [🔐 Authentication](#authentication)
+- [🤝 Contributing](#contributing)
+- [📄 License](#license)
 
-## Installation
+## 🛠️ Installation
 
 Follow these steps to set up the project locally:
 
@@ -52,7 +56,7 @@ Follow these steps to set up the project locally:
    npm run build
    ```
 
-## Usage
+## 🚀 Usage
 
 ### Getting Started
 
@@ -96,13 +100,37 @@ Follow these steps to set up the project locally:
 - View your GitHub profile information
 - Sign out when finished
 
-## Requirements
+### 🏢 Auth0 Organization Repositories
+
+The application includes a dedicated view for browsing Auth0 organization repositories:
+
+#### Features:
+- **📋 Tabular View**: Clean, organized table displaying all Auth0 repositories
+- **📄 License Information**: View license types with direct links to license files
+- **📈 Repository Stats**: See stars, forks, primary language, and last update dates
+- **📊 Statistics Dashboard**: Overview showing total repositories, licensed repos, private repos, and forks
+- **📁 PDF Export**: Download comprehensive repository reports as formatted PDF files
+
+#### How to Use:
+1. Navigate to "Auth0 Repos" from the sidebar
+2. Browse repositories in the interactive table
+3. Click on repository names to visit them on GitHub
+4. Click on license badges to view license files
+5. Use the "Download PDF" button to export data
+
+#### PDF Reports Include:
+- Complete repository listing with all metadata
+- Statistics summary
+- Professional formatting with proper column alignment
+- Timestamped filename for easy organization
+
+## 📎 Requirements
 
 - Node.js 14.0 or newer
 - GitHub account with personal access token
 - Modern web browser (Chrome, Firefox, Safari, Edge)
 
-## Application Structure
+## 🏢 Application Structure
 
 The application follows the MVVM (Model-View-ViewModel) architecture pattern:
 
@@ -131,7 +159,7 @@ The application follows the MVVM (Model-View-ViewModel) architecture pattern:
 - Encapsulate API calls and external integrations
 - Manage GitHub API communication
 
-## API Integration
+## 🔗 API Integration
 
 The application uses the GitHub REST API v3 to:
 
@@ -143,7 +171,7 @@ The application uses the GitHub REST API v3 to:
 
 Rate limiting is automatically handled to prevent API usage limits.
 
-## Authentication
+## 🔐 Authentication
 
 Authentication is implemented using GitHub personal access tokens, which provides:
 
@@ -154,7 +182,7 @@ Authentication is implemented using GitHub personal access tokens, which provide
 
 Tokens are stored securely in the browser's localStorage for persistence between sessions.
 
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
@@ -164,6 +192,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
+## 📄 License
 
 Distributed under the MIT License. See `LICENSE` for more information.
