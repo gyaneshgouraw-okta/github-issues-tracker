@@ -18,7 +18,7 @@ const LoginContainer = styled.div`
   height: 100vh;
   width: 100vw;
   padding: 1rem;
-  background: linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #0d0d0d 50%, #262626 75%, #000000 100%);
+  background: #1a1a1a;
   position: fixed;
   top: 0;
   left: 0;
