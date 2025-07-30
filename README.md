@@ -135,80 +135,27 @@ The application includes a dedicated view for browsing Auth0 organization reposi
 The application follows the MVVM (Model-View-ViewModel) architecture pattern with React Context for state management:
 
 ```mermaid
-graph TB
-    subgraph "🎨 Views Layer"
-        A[App.jsx] --> B[Home Page]
-        A --> C[Issues List Page]
-        A --> D[Auth0 Repos Page]
-        A --> E[Settings Page]
-        A --> F[Login Page]
-        
-        B --> G[Sidebar Component]
-        C --> H[Issue Card Component]
-        D --> I[Repository Table]
-        D --> J[PDF Export Button]
-        
-        G --> K[Navigation Links]
-        H --> L[Comment Display]
-        I --> M[License Badge]
-    end
+flowchart TD
+    A[🎨 Views<br/>React Components] --> B[🧠 Context<br/>State Management]
+    B --> C[🔧 Services<br/>API Calls]
+    C --> D[🌐 GitHub API<br/>External Data]
     
-    subgraph "🧠 Context Providers (ViewModels)"
-        N[Auth Context]
-        O[Repository Context]
-        P[Issue Context]
-    end
+    A1[Home] --> A
+    A2[Issues List] --> A
+    A3[Auth0 Repos] --> A
+    A4[Settings] --> A
     
-    subgraph "🔧 Services Layer"
-        Q[GitHub Service]
-        R[Storage Service]
-        S[PDF Service]
-    end
+    B1[Auth Context] --> B
+    B2[Repository Context] --> B
+    B3[Issue Context] --> B
     
-    subgraph "📊 Models Layer"
-        T[User Model]
-        U[Repository Model]
-        V[Issue Model]
-        W[Comment Model]
-    end
+    C1[GitHub Service] --> C
+    C2[PDF Service] --> C
     
-    subgraph "🌐 External APIs"
-        X[GitHub REST API]
-        Y[Browser Storage]
-    end
-    
-    %% Connections
-    A -.-> N
-    A -.-> O
-    A -.-> P
-    
-    N --> Q
-    O --> Q
-    P --> Q
-    
-    Q --> X
-    R --> Y
-    
-    Q -.-> T
-    Q -.-> U
-    Q -.-> V
-    Q -.-> W
-    
-    D --> S
-    S -.-> I
-    
-    %% Styling
-    classDef viewLayer fill:#e1f5fe
-    classDef contextLayer fill:#f3e5f5
-    classDef serviceLayer fill:#e8f5e8
-    classDef modelLayer fill:#fff3e0
-    classDef externalLayer fill:#ffebee
-    
-    class A,B,C,D,E,F,G,H,I,J,K,L,M viewLayer
-    class N,O,P contextLayer
-    class Q,R,S serviceLayer
-    class T,U,V,W modelLayer
-    class X,Y externalLayer
+    style A fill:#e3f2fd
+    style B fill:#f3e5f5
+    style C fill:#e8f5e8
+    style D fill:#ffebee
 ```
 
 ### 📁 Directory Structure
